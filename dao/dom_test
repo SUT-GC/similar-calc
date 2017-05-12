@@ -1,0 +1,550 @@
+# coding: utf-8
+from sqlalchemy import BigInteger, Column, Date, DateTime, Float, Integer, Numeric, SmallInteger, String, Table, text
+from sqlalchemy.sql.sqltypes import NullType
+from sqlalchemy.ext.declarative import declarative_base
+
+
+Base = declarative_base()
+metadata = Base.metadata
+
+
+class DomBrandRelationPoi(Base):
+    __tablename__ = 'dom_brand_relation_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_brand_relation_poi_id_seq'::regclass)"))
+    brand_id = Column(BigInteger, nullable=False)
+    poi_id = Column(BigInteger, nullable=False)
+    is_valid = Column(SmallInteger, nullable=False, server_default=text("1"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomCooperationShop(Base):
+    __tablename__ = 'dom_cooperation_shop'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_cooperation_shop_id_seq'::regclass)"))
+    dom_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    ers_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    data_status = Column(Integer, nullable=False, server_default=text("0"))
+    operator_type = Column(Integer, nullable=False, server_default=text("0"))
+    operator_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomCorrectPoi(Base):
+    __tablename__ = 'dom_correct_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_correct_poi_id_seq'::regclass)"))
+    ers_id = Column(BigInteger, nullable=False)
+    shop_name = Column(String(80))
+    branch_shop_name = Column(String(80))
+    category_ids = Column(String(90))
+    phone = Column(String(255))
+    business_time = Column(String(128))
+    brand_id = Column(String(30))
+    mall_id = Column(String(30))
+    meituan_poi_id = Column(String(50))
+    dianping_poi_id = Column(String(50))
+    baidu_poi_id = Column(String(50))
+    province_id = Column(Integer)
+    city_id = Column(Integer)
+    district_id = Column(String(20))
+    longitude = Column(Numeric(16, 13))
+    latitude = Column(Numeric(16, 13))
+    address = Column(String(255))
+    address_pic_hash = Column(String(512))
+    shop_status = Column(SmallInteger)
+    correct_remark = Column(String(512))
+    status_pic_hash = Column(String(512))
+    correct_type = Column(SmallInteger, nullable=False, server_default=text("1"))
+    reporter_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    reporter_type = Column(SmallInteger, nullable=False, server_default=text("0"))
+    operator_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    review_status = Column(SmallInteger, nullable=False, server_default=text("0"))
+    remark = Column(String(512), nullable=False, server_default=text("''::character varying"))
+    is_valid = Column(Integer, nullable=False, server_default=text("1"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomDuplicatePoi(Base):
+    __tablename__ = 'dom_duplicate_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_duplicate_poi_id_seq'::regclass)"))
+    ers_id = Column(BigInteger, nullable=False)
+    related_ers_id = Column(BigInteger, nullable=False)
+    reporter_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    reporter_type = Column(SmallInteger, nullable=False, server_default=text("0"))
+    operator_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    review_status = Column(SmallInteger, nullable=False, server_default=text("0"))
+    remark = Column(String(512), nullable=False, server_default=text("''::character varying"))
+    is_valid = Column(SmallInteger, nullable=False, server_default=text("1"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomErsRelationOuterPoiForCalc(Base):
+    __tablename__ = 'dom_ers_relation_outer_poi_for_calc'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_ers_relation_outer_poi_for_calc_seq'::regclass)"))
+    dom_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    other_poi_id = Column(String(80), nullable=False, server_default=text("''::character varying"))
+    source = Column(SmallInteger, nullable=False, server_default=text("0"))
+    weight = Column(SmallInteger, nullable=False, server_default=text("0"))
+    related = Column(SmallInteger, nullable=False, server_default=text("0"))
+    operator_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    data_status = Column(SmallInteger, nullable=False, server_default=text("1"))
+    score = Column(Float(53), nullable=False, server_default=text("0.0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomExtBaiduRestaurant(Base):
+    __tablename__ = 'dom_ext_baidu_restaurant'
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('dom_ext_baidu_restaurant_id_seq'::regclass)"))
+    shop_id = Column(String(30), nullable=False, server_default=text("''::character varying"))
+    shop_name = Column(String(50), server_default=text("''::character varying"))
+    takeout_price = Column(Numeric(12, 2), nullable=False, server_default=text("0.00"))
+    takeout_cost = Column(Numeric(12, 2), nullable=False, server_default=text("0.00"))
+    shop_announcement = Column(String(300), nullable=False, server_default=text("''::character varying"))
+    saled_month = Column(String(50), nullable=False, server_default=text("''::character varying"))
+    bussiness_time = Column(String(50), nullable=False, server_default=text("''::character varying"))
+    address = Column(String(120), nullable=False, server_default=text("''::character varying"))
+    shop_phone = Column(String(30), nullable=False, server_default=text("''::character varying"))
+    front_logistics_text = Column(String(30), nullable=False, server_default=text("''::character varying"))
+    shop_photo = Column(String(700), nullable=False, server_default=text("''::character varying"))
+    ceritification = Column(String(700), nullable=False, server_default=text("''::character varying"))
+    logo = Column(String(100), nullable=False, server_default=text("''::character varying"))
+    category = Column(String(1000), nullable=False, server_default=text("''::character varying"))
+    average_score = Column(Numeric(10, 2), nullable=False, server_default=text("0.00"))
+    comment_num = Column(Integer, nullable=False, server_default=text("0"))
+    menu_count = Column(Integer, nullable=False, server_default=text("0"))
+    bizcurrentmonthbussiness = Column(Numeric(12, 2), nullable=False, server_default=text("0.00"))
+    eleme_lat = Column(Numeric(16, 13), nullable=False, server_default=text("0.0000000"))
+    eleme_lng = Column(Numeric(16, 13), nullable=False, server_default=text("0.0000000"))
+    sheng = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    shiqu = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    xian = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    restaurant_status = Column(Integer, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    fendian_name = Column(String(100), nullable=False, server_default=text("''::character varying"))
+    fuss_url = Column(String(150), nullable=False, server_default=text("''::character varying"))
+    location = Column(NullType, nullable=False, server_default=text("st_setsrid(st_makepoint((0)::double precision, (0)::double precision), 4326)"))
+    crawler_flag = Column(Integer, nullable=False, server_default=text("0"))
+
+
+class DomExtDianpingRestaurant(Base):
+    __tablename__ = 'dom_ext_dianping_restaurant'
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('dom_ext_dianping_restaurant_id_seq'::regclass)"))
+    restaurant_id = Column(Integer, nullable=False, server_default=text("0"))
+    restaurant_name = Column(String(70), nullable=False, server_default=text("''::character varying"))
+    cityname = Column(String(30), nullable=False, server_default=text("''::character varying"))
+    cityid = Column(Integer, nullable=False, server_default=text("0"))
+    nav = Column(String(50), nullable=False, server_default=text("''::character varying"))
+    category = Column(String(30), nullable=False, server_default=text("''::character varying"))
+    address = Column(String(300), nullable=False, server_default=text("''::character varying"))
+    telphone = Column(String(50), nullable=False, server_default=text("''::character varying"))
+    star_text = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    star = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    average = Column(Numeric(10, 2), nullable=False, server_default=text("0.00"))
+    taste = Column(Numeric(10, 2), nullable=False, server_default=text("0.00"))
+    environ = Column(Numeric(10, 2), nullable=False, server_default=text("0.00"))
+    service = Column(Numeric(10, 2), nullable=False, server_default=text("0.00"))
+    lng = Column(Numeric(16, 13), nullable=False, server_default=text("0.0000000"))
+    lat = Column(Numeric(16, 13), nullable=False, server_default=text("0.0000000"))
+    waimai = Column(Integer, nullable=False, server_default=text("0"))
+    month_sale = Column(Integer, nullable=False, server_default=text("0"))
+    activitylist = Column(String(50), nullable=False, server_default=text("''::character varying"))
+    deliver_type = Column(Integer, nullable=False, server_default=text("0"))
+    flag_new = Column(Integer, nullable=False, server_default=text("0"))
+    flag_fendian = Column(Integer, nullable=False, server_default=text("0"))
+    flag_brand = Column(Integer, nullable=False, server_default=text("0"))
+    flag_waimai = Column(Integer, nullable=False, server_default=text("0"))
+    fendian_count = Column(Integer, nullable=False, server_default=text("0"))
+    comment1 = Column(Integer, nullable=False, server_default=text("0"))
+    tuan = Column(Integer, nullable=False, server_default=text("0"))
+    shan = Column(Integer, nullable=False, server_default=text("0"))
+    fendian_name = Column(String(50), nullable=False, server_default=text("''::character varying"))
+    flag_tuan = Column(Integer, nullable=False, server_default=text("0"))
+    flag_cu = Column(Integer, nullable=False, server_default=text("0"))
+    flag_ding = Column(Integer, nullable=False, server_default=text("0"))
+    zhizhao = Column(Integer, nullable=False, server_default=text("0"))
+    xukezheng = Column(Integer, nullable=False, server_default=text("0"))
+    open_close = Column(String(500), nullable=False, server_default=text("''::character varying"))
+    flag_offline = Column(Integer, nullable=False, server_default=text("0"))
+    comment_all = Column(Integer, nullable=False, server_default=text("0"))
+    sheng = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    shiqu = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    xian = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    shop_area = Column(String(30), nullable=False, server_default=text("''::character varying"))
+    logurl = Column(String(300), nullable=False, server_default=text("''::character varying"))
+    imgnum = Column(Integer, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    location = Column(NullType, nullable=False, server_default=text("st_setsrid(st_makepoint((0)::double precision, (0)::double precision), 4326)"))
+    crawler_flag = Column(Integer, nullable=False, server_default=text("0"))
+
+
+class DomExtMeituanRestaurant(Base):
+    __tablename__ = 'dom_ext_meituan_restaurant'
+
+    id = Column(Integer, primary_key=True, server_default=text("nextval('dom_ext_meituan_restaurant_id_seq'::regclass)"))
+    shop_id = Column(Integer, nullable=False, server_default=text("0"))
+    shop_name = Column(String(60), nullable=False, server_default=text("''::character varying"))
+    fendian_name = Column(String(50), nullable=False, server_default=text("''::character varying"))
+    bulletin = Column(String(1000), nullable=False, server_default=text("''::character varying"))
+    call_center = Column(String(150), nullable=False, server_default=text("''::character varying"))
+    address = Column(String(150), nullable=False, server_default=text("''::character varying"))
+    thumbnails_url = Column(String(150), nullable=False, server_default=text("''::character varying"))
+    shipping_time = Column(String(60), nullable=False, server_default=text("''::character varying"))
+    delivery_type = Column(Integer, nullable=False, server_default=text("0"))
+    pic_url = Column(String(100), nullable=False, server_default=text("''::character varying"))
+    yyzz = Column(String(100), nullable=False, server_default=text("''::character varying"))
+    wsxkz = Column(String(100), nullable=False, server_default=text("''::character varying"))
+    totalscore = Column(Numeric(10, 2), nullable=False, server_default=text("0.00"))
+    comment1 = Column(Integer, nullable=False, server_default=text("0"))
+    month_sale_num = Column(Integer, nullable=False, server_default=text("0"))
+    min_price = Column(Numeric(10, 2), nullable=False, server_default=text("0.00"))
+    shipping_fee = Column(Numeric(10, 2), nullable=False, server_default=text("0.00"))
+    category_name = Column(String(30), nullable=False, server_default=text("''::character varying"))
+    menu_count = Column(Integer, nullable=False, server_default=text("0"))
+    shop_amt = Column(Numeric(12, 2), nullable=False, server_default=text("0.00"))
+    eleme_lat = Column(Numeric(16, 13), nullable=False, server_default=text("0.0000000"))
+    eleme_lng = Column(Numeric(16, 13), nullable=False, server_default=text("0.0000000"))
+    sheng = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    shiqu = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    xian = Column(String(20), nullable=False, server_default=text("''::character varying"))
+    restaurant_status = Column(Integer, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    fuss_url = Column(String(150), nullable=False, server_default=text("''::character varying"))
+    location = Column(NullType, nullable=False, server_default=text("st_setsrid(st_makepoint((0)::double precision, (0)::double precision), 4326)"))
+    crawler_flag = Column(Integer, nullable=False, server_default=text("0"))
+
+
+class DomIdMapping(Base):
+    __tablename__ = 'dom_id_mapping'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_id_mapping_id_seq'::regclass)"))
+    old_dom_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    new_dom_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    ers_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomInspectOperateRecord(Base):
+    __tablename__ = 'dom_inspect_operate_record'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_inspect_operate_record_id_seq'::regclass)"))
+    inspector_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    inspector_name = Column(String(80), nullable=False)
+    type = Column(SmallInteger, nullable=False)
+    origin_content = Column(String(255), nullable=False)
+    adjust_content = Column(String(255), nullable=False)
+    remark = Column(String(255), nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    inspect_poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    inspector_type = Column(SmallInteger, nullable=False, server_default=text("0"))
+
+
+class DomInspectPoi(Base):
+    __tablename__ = 'dom_inspect_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_inspect_poi_id_seq'::regclass)"))
+    dom_id = Column(BigInteger, nullable=False)
+    ers_id = Column(BigInteger, nullable=False)
+    inspected_at = Column(DateTime)
+    inspect_status = Column(SmallInteger, nullable=False, server_default=text("0"))
+    inspector_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    inspector_name = Column(String(50), nullable=False, server_default=text("' '::character varying"))
+
+
+class DomMallRelationPoi(Base):
+    __tablename__ = 'dom_mall_relation_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_mall_relation_poi_id_seq'::regclass)"))
+    mall_id = Column(BigInteger, nullable=False)
+    poi_id = Column(BigInteger, nullable=False)
+    is_valid = Column(SmallInteger, nullable=False, server_default=text("1"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomPoi(Base):
+    __tablename__ = 'dom_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_poi_id_seq'::regclass)"))
+    shop_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    branch_shop_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    shop_show_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    province_id = Column(Integer, nullable=False, server_default=text("0"))
+    city_id = Column(Integer, nullable=False, server_default=text("0"))
+    district_id = Column(Integer, nullable=False, server_default=text("0"))
+    address = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    address_show = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    longitude = Column(Numeric(16, 13), nullable=False)
+    latitude = Column(Numeric(16, 13), nullable=False)
+    location = Column(NullType, nullable=False, server_default=text("st_setsrid(st_makepoint((0)::double precision, (0)::double precision), 4326)"))
+    phone = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    main_category_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    minor_category_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    shop_status = Column(SmallInteger, nullable=False, server_default=text("0"))
+    business_time = Column(String(2000), nullable=False, server_default=text("''::character varying"))
+    business_day = Column(String(2000), nullable=False, server_default=text("''::character varying"))
+    description = Column(String(2000), nullable=False, server_default=text("''::character varying"))
+    head_pic = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    logo_pic = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    brand_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    mall_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    shopping_district_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    source = Column(SmallInteger, nullable=False, server_default=text("0"))
+    data_status = Column(SmallInteger, nullable=False, server_default=text("1"))
+    baidu_poi_id = Column(String(80), nullable=False, server_default=text("''::character varying"))
+    meituan_poi_id = Column(String(80), nullable=False, server_default=text("''::character varying"))
+    dianping_poi_id = Column(String(80), nullable=False, server_default=text("''::character varying"))
+    koubei_poi_id = Column(String(80), nullable=False, server_default=text("''::character varying"))
+    ers_poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomPoiChangeRecord(Base):
+    __tablename__ = 'dom_poi_change_record'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_poi_change_record_seq'::regclass)"))
+    dom_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    field_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    from_value = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    to_value = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    remark = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    operator_type = Column(SmallInteger, nullable=False, server_default=text("0"))
+    operator_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+t_dom_poi_lisztoy_a = Table(
+    'dom_poi_lisztoy_a', metadata,
+    Column('id', BigInteger),
+    Column('source', SmallInteger),
+    Column('meituan_poi_id', String(80)),
+    Column('baidu_poi_id', String(80)),
+    Column('dianping_poi_id', String(80))
+)
+
+
+t_dom_poi_lisztoy_b = Table(
+    'dom_poi_lisztoy_b', metadata,
+    Column('outer_poi_id', String(80)),
+    Column('type', SmallInteger),
+    Column('ers_poi_id', BigInteger)
+)
+
+
+class DomPoiOperateRecord(Base):
+    __tablename__ = 'dom_poi_operate_record'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_poi_operate_record_id_seq'::regclass)"))
+    review_poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    type = Column(SmallInteger, nullable=False, server_default=text("0"))
+    remark = Column(String(512), nullable=False, server_default=text("''::character varying"))
+    operator_id = Column(BigInteger, nullable=False, server_default=text("(-1)"))
+    operator_name = Column(String(80), nullable=False, server_default=text("''::character varying"))
+    operator_type = Column(SmallInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
+
+
+class DomPoiRelationOuterPoi(Base):
+    __tablename__ = 'dom_poi_relation_outer_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_poi_relation_outer_poi_id_seq'::regclass)"))
+    poi_id = Column(BigInteger, nullable=False)
+    outer_poi_id = Column(String(80), nullable=False)
+    source = Column(SmallInteger, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomRegionReview(Base):
+    __tablename__ = 'dom_region_review'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_region_review_id_seq'::regclass)"))
+    dom_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    ers_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    current_city_id = Column(Integer, nullable=False, server_default=text("0"))
+    current_city_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    province_id = Column(Integer, nullable=False, server_default=text("0"))
+    province_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    city_id = Column(Integer, nullable=False, server_default=text("0"))
+    city_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    district_id = Column(Integer, nullable=False, server_default=text("0"))
+    district_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    outer_province_id = Column(Integer, nullable=False, server_default=text("0"))
+    outer_province_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    outer_city_id = Column(Integer, nullable=False, server_default=text("0"))
+    outer_city_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    outer_district_id = Column(Integer, nullable=False, server_default=text("0"))
+    outer_district_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomReviewPoi(Base):
+    __tablename__ = 'dom_review_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_review_poi_id_seq'::regclass)"))
+    shop_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    branch_shop_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    shop_show_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    province_id = Column(Integer, nullable=False, server_default=text("0"))
+    city_id = Column(Integer, nullable=False, server_default=text("0"))
+    district_id = Column(Integer, nullable=False, server_default=text("0"))
+    address = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    address_show = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    longitude = Column(Numeric(16, 13), nullable=False)
+    latitude = Column(Numeric(16, 13), nullable=False)
+    phone = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    main_category_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    minor_category_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    shop_status = Column(SmallInteger, nullable=False, server_default=text("0"))
+    business_time = Column(String(2000), nullable=False, server_default=text("''::character varying"))
+    business_day = Column(String(2000), nullable=False, server_default=text("''::character varying"))
+    description = Column(String(2000), nullable=False, server_default=text("''::character varying"))
+    head_pic = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    logo_pic = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    brand_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    mall_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    shopping_district_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    outer_poi_id = Column(String(80), nullable=False)
+    sales = Column(Integer, nullable=False, server_default=text("0"))
+    source = Column(SmallInteger, nullable=False)
+    review_status = Column(SmallInteger, nullable=False, server_default=text("0"))
+    remark = Column(String(512), nullable=False, server_default=text("''::character varying"))
+    handler_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    data_status = Column(SmallInteger, nullable=False, server_default=text("1"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    comments = Column(Integer, nullable=False, server_default=text("0"))
+
+
+t_dom_review_poi_temp = Table(
+    'dom_review_poi_temp', metadata,
+    Column('outer_poi_id', String(80)),
+    Column('source', SmallInteger),
+    Column('type', SmallInteger),
+    Column('ers_poi_id', BigInteger)
+)
+
+
+t_dom_review_poi_temp_v1 = Table(
+    'dom_review_poi_temp_v1', metadata,
+    Column('outer_poi_id', String(80)),
+    Column('source', SmallInteger),
+    Column('type', SmallInteger),
+    Column('ers_poi_id', BigInteger)
+)
+
+
+class DomTaskRecord(Base):
+    __tablename__ = 'dom_task_record'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_task_record_id_seq'::regclass)"))
+    task_type = Column(SmallInteger, nullable=False)
+    remark = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    handler_status = Column(SmallInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomWorkStatistic(Base):
+    __tablename__ = 'dom_work_statistics'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_work_statistics_id_seq'::regclass)"))
+    operator_id = Column(BigInteger, nullable=False, server_default=text("(-1)"))
+    operator_name = Column(String(80), nullable=False)
+    operator_type = Column(SmallInteger, nullable=False, server_default=text("0"))
+    statistics_date = Column(Date, nullable=False, server_default=text("('now'::text)::date"))
+    working_time_sec = Column(BigInteger, nullable=False)
+    relate_poi_num = Column(Integer, nullable=False)
+    create_poi_num = Column(Integer, nullable=False)
+    ignore_poi_num = Column(Integer, nullable=False)
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    dup_working_time_sec = Column(BigInteger, nullable=False, server_default=text("0"))
+    correct_working_time_sec = Column(BigInteger, nullable=False, server_default=text("0"))
+    check_duplicate_num = Column(Integer, nullable=False, server_default=text("0"))
+    check_noduplicate_num = Column(Integer, nullable=False, server_default=text("0"))
+    review_correct_num = Column(Integer, nullable=False, server_default=text("0"))
+    inspect_working_time_sec = Column(BigInteger, nullable=False, server_default=text("0"))
+    inspect_poi_num = Column(Integer, nullable=False, server_default=text("0"))
+
+
+class DomWorkingTimeRecord(Base):
+    __tablename__ = 'dom_working_time_record'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_working_time_record_id_seq'::regclass)"))
+    operator_id = Column(BigInteger, nullable=False)
+    begin_time = Column(DateTime, nullable=False)
+    end_time = Column(DateTime, nullable=False, server_default=text("'1970-01-01 08:00:01'::timestamp without time zone"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    type = Column(SmallInteger, nullable=False, server_default=text("0"))
+
+
+class DomWrongPoi(Base):
+    __tablename__ = 'dom_wrong_poi'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_wrong_poi_id_seq'::regclass)"))
+    correct_poi_id = Column(BigInteger, nullable=False)
+    shop_name = Column(String(80), server_default=text("''::character varying"))
+    branch_shop_name = Column(String(80), server_default=text("''::character varying"))
+    shop_show_name = Column(String(80), server_default=text("''::character varying"))
+    province_id = Column(Integer, server_default=text("0"))
+    city_id = Column(Integer, server_default=text("0"))
+    district_id = Column(Integer, server_default=text("0"))
+    address = Column(String(255), server_default=text("''::character varying"))
+    address_show = Column(String(255), server_default=text("''::character varying"))
+    longitude = Column(Numeric(16, 13))
+    latitude = Column(Numeric(16, 13))
+    location = Column(NullType, server_default=text("st_setsrid(st_makepoint((0)::double precision, (0)::double precision), 4326)"))
+    phone = Column(String(255), server_default=text("''::character varying"))
+    main_category_id = Column(BigInteger, server_default=text("0"))
+    minor_category_id = Column(BigInteger, server_default=text("0"))
+    shop_status = Column(SmallInteger, server_default=text("0"))
+    business_time = Column(String(2000), server_default=text("''::character varying"))
+    business_day = Column(String(2000), server_default=text("''::character varying"))
+    description = Column(String(512), server_default=text("''::character varying"))
+    head_pic = Column(String(255), server_default=text("''::character varying"))
+    logo_pic = Column(String(255), server_default=text("''::character varying"))
+    brand_id = Column(BigInteger, server_default=text("0"))
+    mall_id = Column(BigInteger, server_default=text("0"))
+    shopping_district_id = Column(BigInteger, server_default=text("0"))
+    source = Column(SmallInteger, server_default=text("0"))
+    data_status = Column(SmallInteger, server_default=text("1"))
+    baidu_poi_id = Column(String(80), server_default=text("0"))
+    meituan_poi_id = Column(String(80), server_default=text("0"))
+    dianping_poi_id = Column(String(80), server_default=text("0"))
+    koubei_poi_id = Column(String(80), server_default=text("0"))
+    ers_poi_id = Column(BigInteger, server_default=text("0"))
+    created_at = Column(DateTime, server_default=text("now()"))
+    updated_at = Column(DateTime, server_default=text("now()"))
+
+
+class SpatialRefSy(Base):
+    __tablename__ = 'spatial_ref_sys'
+
+    srid = Column(Integer, primary_key=True)
+    auth_name = Column(String(256))
+    auth_srid = Column(Integer)
+    srtext = Column(String(2048))
+    proj4text = Column(String(2048))

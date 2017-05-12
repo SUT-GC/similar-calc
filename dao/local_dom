@@ -1,0 +1,87 @@
+# coding: utf-8
+from sqlalchemy import BigInteger, Column, DateTime, Numeric, SmallInteger, String, text
+from sqlalchemy.ext.declarative import declarative_base
+
+
+Base = declarative_base()
+metadata = Base.metadata
+
+
+class DomBaiduRestairamtInfo(Base):
+    __tablename__ = 'dom_baidu_restairamt_info'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_baidu_restairamt_info_seq'::regclass)"))
+    baidu_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    baidu_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    baidu_branch_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    baidu_address = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    baidu_phone = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    baidu_latitude = Column(Numeric, nullable=False, server_default=text("0.0"))
+    baidu_longitude = Column(Numeric, nullable=False, server_default=text("0.0"))
+    baidu_logo_hash = Column(String(512), nullable=False, server_default=text("''::character varying"))
+    baidu_is_value = Column(SmallInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomDianpingRestairamtInfo(Base):
+    __tablename__ = 'dom_dianping_restairamt_info'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_dianping_restairamt_info_seq'::regclass)"))
+    dianping_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    dianping_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    dianping_branch_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    dianping_address = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    dianping_phone = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    dianping_latitude = Column(Numeric, nullable=False, server_default=text("0.0"))
+    dianping_longitude = Column(Numeric, nullable=False, server_default=text("0.0"))
+    dianping_logo_hash = Column(String(512), nullable=False, server_default=text("''::character varying"))
+    dianping_is_value = Column(SmallInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomElemeRestaurantInfo(Base):
+    __tablename__ = 'dom_eleme_restaurant_info'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_eleme_restaurant_info_seq'::regclass)"))
+    eleme_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    eleme_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    eleme_branch_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    eleme_address = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    eleme_phone = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    eleme_latitude = Column(Numeric, nullable=False, server_default=text("0.0"))
+    eleme_longitude = Column(Numeric, nullable=False, server_default=text("0.0"))
+    eleme_logo_hash = Column(String(512), nullable=False, server_default=text("''::character varying"))
+    eleme_is_value = Column(SmallInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomMeituanRestairamtInfo(Base):
+    __tablename__ = 'dom_meituan_restairamt_info'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_meituan_restairamt_info_seq'::regclass)"))
+    meituan_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    meituan_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    meituan_branch_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    meituan_address = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    meituan_phone = Column(String(255), nullable=False, server_default=text("''::character varying"))
+    meituan_latitude = Column(Numeric, nullable=False, server_default=text("0.0"))
+    meituan_longitude = Column(Numeric, nullable=False, server_default=text("0.0"))
+    meituan_logo_hash = Column(String(512), nullable=False, server_default=text("''::character varying"))
+    meituan_is_value = Column(SmallInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
+class DomRestaurantRelation(Base):
+    __tablename__ = 'dom_restaurant_relation'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_restaurant_relation_seq'::regclass)"))
+    eleme_poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    other_poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    source = Column(SmallInteger, nullable=False, server_default=text("0"))
+    is_valid = Column(SmallInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
