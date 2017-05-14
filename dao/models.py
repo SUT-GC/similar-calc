@@ -50,7 +50,7 @@ class DomBaiduRestairamtInfo(Base):
     __tablename__ = 'dom_baidu_restairamt_info'
 
     id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_baidu_restairamt_info_seq'::regclass)"))
-    baidu_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    baidu_id = Column(String(255), nullable=False, server_default=text("0"))
     baidu_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
     baidu_branch_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
     baidu_address = Column(String(255), nullable=False, server_default=text("''::character varying"))
@@ -67,7 +67,7 @@ class DomDianpingRestairamtInfo(Base):
     __tablename__ = 'dom_dianping_restairamt_info'
 
     id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_dianping_restairamt_info_seq'::regclass)"))
-    dianping_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    dianping_id = Column(String(255), nullable=False, server_default=text("0"))
     dianping_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
     dianping_branch_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
     dianping_address = Column(String(255), nullable=False, server_default=text("''::character varying"))
@@ -101,7 +101,7 @@ class DomMeituanRestairamtInfo(Base):
     __tablename__ = 'dom_meituan_restairamt_info'
 
     id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_meituan_restairamt_info_seq'::regclass)"))
-    meituan_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    meituan_id = Column(String(255), nullable=False, server_default=text("0"))
     meituan_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
     meituan_branch_name = Column(String(255), nullable=False, server_default=text("''::character varying"))
     meituan_address = Column(String(255), nullable=False, server_default=text("''::character varying"))
@@ -119,7 +119,7 @@ class DomRestaurantRelation(Base):
 
     id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_restaurant_relation_seq'::regclass)"))
     eleme_poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
-    other_poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    other_poi_id = Column(String(255), nullable=False, server_default=text("0"))
     source = Column(SmallInteger, nullable=False, server_default=text("0"))
     is_valid = Column(SmallInteger, nullable=False, server_default=text("0"))
     created_at = Column(DateTime, nullable=False, server_default=text("now()"))

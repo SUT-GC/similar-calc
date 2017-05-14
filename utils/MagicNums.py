@@ -1,0 +1,6 @@
+#! -*-coding:utf8-*-
+
+MEITUAN_SOURCE = 1
+DIANPING_SOURCE = 2
+BAIDU_SOURCE = 3
+
