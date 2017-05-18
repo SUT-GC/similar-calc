@@ -126,6 +126,18 @@ class DomRestaurantRelation(Base):
     updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
 
 
+class DomRestaurantNotRelation(Base):
+    __tablename__ = 'dom_restaurant_not_relation'
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('dom_restaurant_not_relation_seq'::regclass)"))
+    eleme_poi_id = Column(BigInteger, nullable=False, server_default=text("0"))
+    other_poi_id = Column(String(255), nullable=False, server_default=text("0"))
+    source = Column(SmallInteger, nullable=False, server_default=text("0"))
+    is_valid = Column(SmallInteger, nullable=False, server_default=text("0"))
+    created_at = Column(DateTime, nullable=False, server_default=text("now()"))
+    updated_at = Column(DateTime, nullable=False, server_default=text("now()"))
+
+
 class DomPoi(Base):
     __tablename__ = 'dom_poi'
 
