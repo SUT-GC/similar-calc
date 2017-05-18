@@ -34,12 +34,11 @@
 # plt.show()
 
 #-*- coding: utf-8 -*-
-from pylab import *
-mpl.rcParams['font.sans-serif'] = ['SimHei']
-t = arange(-4*pi, 4*pi, 0.01)
-y = sin(t)/t
-plt.plot(t, y)
-plt.title(u'钟形函数')
-plt.xlabel(u'时间')
-plt.ylabel(u'幅度')
+import matplotlib.pyplot as plt
+ 
+plt.clf()  # 清空画布
+plt.plot([1, 2, 3], [4, 5, 6])
+plt.xlabel(u"横轴")
+plt.ylabel(u"纵轴")
+plt.title("pythoner.com")
 plt.show()

@@ -8,6 +8,12 @@ def isEmptyList(my_list, empty_size=0):
 def isNotEmptyList(my_list, empty_size=0):
     return not isEmptyList(my_list, empty_size=0)
 
+def calc_avg(my_list):
+    my_sum = 0.0
+    for x in my_list:
+        my_sum += x
+
+    return my_sum * 1.0 / len(my_list)
 
 if __name__ == '__main__':
     l1 = []
