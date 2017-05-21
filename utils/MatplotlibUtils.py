@@ -29,7 +29,7 @@ def draw_boxplot(data, xlabel, title, fontsize=my_fs, figsize=my_figsize, write_
 
     print "绘制完成"
 
-def draw_histogram(data, xlabel, ylabel, title, write_file_path=None):
+def draw_histogram(data, xlabel='', ylabel='', title='', write_file_path=None):
     data_sum = 0.0
     for x in data:
         data_sum += x
@@ -61,10 +61,32 @@ def draw_histogram(data, xlabel, ylabel, title, write_file_path=None):
     else:
         plt.savefig(write_file_path)
 
-    print "绘制完成"
+    print "绘制完成[%s]" % write_file_path
+
+def draw_multi_histogram(datas, xlabel='', ylabel='', title='', write_file_path=None):
+    colors = ['red', 'blue', 'green', 'yellow', 'black']
+    if len(datas) > len(colors):
+        raise Exception ('所画线条%s 不能超过 %s' % (len(datas), colors))
+    fig, ax = plt.subplots()
+    for i in range(len(datas)):
+        n, bins, patches = ax.hist(datas[i], normed=True)
+    
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+
+    # Tweak spacing to prevent clipping of ylabel
+    fig.tight_layout()
+
+    if write_file_path is None:
+        plt.show()
+    else:
+        plt.savefig(write_file_path)
+
+    print "绘制完成[%s]" % write_file_path
 
 if __name__ == '__main__':
     # draw_boxplot([1], 'name', 'my')
-    draw_histogram([1,2,2,2,2,2,3,3,4,], u'x坐标', "ylabel", "title")
+    draw_multi_histogram(([100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200, 200, 200, 200, 200, 200, 200, 300, 300, 400, 400, 500, 500, 800, 900, 1100, 1100], [1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100, 1100]), u'x坐标', "ylabel", "title")
 
 

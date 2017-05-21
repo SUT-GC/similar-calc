@@ -11,7 +11,6 @@ class SphericalDistance(object):
     def calc_distance(self):
         # 将十进制度数转化为弧度  
         lon1, lat1, lon2, lat2 = map(radians, [self.lon1, self.lat1, self.lon2, self.lat2])  
-      
         # haversine公式  
         dlon = lon2 - lon1   
         dlat = lat2 - lat1   
