@@ -856,17 +856,629 @@ dom_meituan_restaurant表存储着美团外卖店铺的基本信息表，表结�
 
 #### 4.1.1 名称地址相似度分数阀值计算
 
+经过上面的算法分析，我们选出JaroWinkler Similar算法对店铺name属性进行匹配，Cosine Similar算法对店铺address进行匹配。 下面，我们分别拿出1万条已经确认重复的店铺信息和1万条已经确认不重复的店铺信息分别进行name和adress属性的匹配，最终定出权重和阀值。数据分析结果如下：
+
+![eleme-baidu:name](http://oppz2fvil.bkt.clouddn.com/eleme-baidu:name-%5BJaroWinklerSimilar%5D.png)
+![eleme-baidu:address](http://oppz2fvil.bkt.clouddn.com/eleme-baidu:address-%5BCosineSimilar%5D.png)
+![eleme-meituan:name](http://oppz2fvil.bkt.clouddn.com/eleme-meituan:name-%5BJaroWinklerSimilar%5D.png)
+![eleme-meituan:address](http://oppz2fvil.bkt.clouddn.com/eleme-meituan:address-%5BCosineSimilar%5D.png)
+![eleme-dianping:name](http://oppz2fvil.bkt.clouddn.com/eleme-dianping:name-%5BJaroWinklerSimilar%5D.png)
+![eleme-dianping:address](http://oppz2fvil.bkt.clouddn.com/eleme-dianping:address-%5BCosineSimilar%5D.png)
+
+经过数据分析，我们得出结论如下：
+
+* 饿了么和百度外卖平台上店铺名称属性当JaroWinklerSimilar匹配分数在(0.8, 1.0]则可以认为名称一致，匹配分数在(0.6, 0.8]之间可认为名称比较相似，匹配分数在(0.5, 0.6]之间可以认为名称可能相似，匹配分数在[0.0, 0.5]之间可以认为名称不相似。
+* 饿了么和百度外卖平台上店铺地址属性当CosineSimilar匹配分数在(0.8, 1.0]则可以认为地址一致，匹配分数在(0.6, 0.8]可以认为极为相似，匹配分数在(0.4, 0.6]之间可认为名称比较相似，匹配分数在(0.3, 0.4]之间可以认为名称可能相似，匹配分数在[0.0, 0.3]之间可以认为名称不相似。
+* 饿了么和美团外卖平台上店铺名称属性当JaroWinklerSimilar匹配分数在(0.8, 1.0]则可以认为名称一致，匹配分数在(0.6, 0.8]之间可认为名称比较相似，匹配分数在(0.5, 0.6]之间可以认为名称可能相似，匹配分数在[0.0, 0.5]之间可以认为名称不相似。
+* 饿了么和美团外卖平台上店铺地址属性当CosineSimilar匹配分数在(0.8, 1.0]则可以认为地址一致，匹配分数在(0.6, 0.8]可以认为极为相似，匹配分数在(0.4, 0.6]之间可认为名称比较相似，匹配分数在(0.3, 0.4]之间可以认为名称可能相似，匹配分数在[0.0, 0.3]之间可以认为名称不相似。
+* 饿了么和点评外卖平台上店铺名称属性当JaroWinklerSimilar匹配分数在(0.8, 1.0]则可以认为名称一致，匹配分数在(0.6, 0.8]之间可认为名称比较相似，匹配分数在(0.5, 0.6]之间可以认为名称可能相似，匹配分数在[0.0, 0.5]之间可以认为名称不相似。
+* 饿了么和点评外卖平台上店铺地址属性当CosineSimilar匹配分数在(0.8, 1.0]则可以认为地址一致，匹配分数在(0.6, 0.8]可以认为极为相似，匹配分数在(0.4, 0.6]之间可认为名称比较相似，匹配分数在(0.3, 0.4]之间可以认为名称可能相似，匹配分数在[0.0, 0.3]之间可以认为名称不相似。
+
+最终我们定义如下分数：
+
+* 名称一致 1.0分
+* 名称极为相似 0.9分
+* 名称比较相似 0.8分
+* 名称可能相似0.6分
+* 名称不相似0.0分
+
 #### 4.1.2 经纬度距离分数阀值计算
 
-#### 4.1.3 店铺判重算法整合
+我们在各个平台上选出1万对已经经过人工判定相似的店铺和1万对人工判定不相似的店铺（饿了么店铺-美团外卖店铺，饿了么店铺-百度外卖店铺，饿了么店铺-点评外卖店铺）进行经纬度距离分析，分析结果如下:
+
+![eleme-meituan-distance](http://oppz2fvil.bkt.clouddn.com/eleme-meituan:%5Bspherical-distance%5D.png)
+![eleme-dianping-distance](http://oppz2fvil.bkt.clouddn.com/eleme-dianping:%5Bspherical-distance%5D.png)
+![eleme-baidu-distance](http://oppz2fvil.bkt.clouddn.com/eleme-baidu:%5Bspherical-distance%5D.png)
+
+上面数据分析条形图横轴：店铺距离（单位100米），纵轴所占比例。图中两种颜色的数据柱，蓝色数据柱为经过判定相似的店铺（饿了么店铺-美团外卖店铺，饿了么店铺-百度外卖店铺，饿了么店铺-点评外卖店铺）的距离分布，橘黄色数据柱为经过判定不相似的店铺的距离分布情况。
+
+经过分析，我们能得出如下结论：
+
+* 在[饿了么-美团外卖]店铺信息对中，确定重复的店铺对中，70%的店铺对距离在[0,200]米之内，15%的店铺对距离在(200,300]米之内，7%的的店铺对距离在(300, 400]米之内，3%的店铺对距离在(400, 500]米之内，其余的店铺对则距离多于500米，比例大概占5%；确定不重复的店铺对中，100%的店铺对距离都超过1000米
+* 在[饿了么-点评外卖]店铺信息对中，确定重复的店铺对中，62%的店铺对距离在[0,200]米之内，15%的店铺对距离在(200,300]米之内，8%的的店铺对距离在(300, 400]米之内，6%的店铺对距离在(400, 500]米之内，其余的店铺对则距离多于500米，比例大概占9%；确定不重复的店铺对中，100%的店铺对距离都超过1000米
+* 在[饿了么-百度外卖]店铺信息对中，确定重复的店铺对中，3%的店铺对距离在[0,200]米之内，30%的店铺对距离在(200,300]米之内，50%的的店铺对距离在(300, 400]米之内，8%的店铺对距离在(400, 500]米之内，4%的店铺对距离在(500, 600]米之内，其余的店铺对则距离多于600米，比例大概占5%；确定不重复的店铺对中，100%的店铺对距离都超过1000米
+
+经过上面数据分析，我们可以设置如下距离匹配分数：
+
+饿了么店铺-美团外卖店铺：
+
+|距离段|分数段|
+|:----|:----|
+|[0, 100]|[1.0, 0.9]|
+|(100, 200]|(0.9, 0.8]|
+|(200, 300]|(0.8, 0.6]|
+|(300, 400]|(0.6, 0.5]|
+|(400, 1000]|(0.5, 0.0]|
+|(1000, +]|0.0|
+
+饿了么店铺-点评外卖店铺：
+
+|距离段|分数段|
+|:----|:----|
+|[0, 100]|[1.0, 0.9]|
+|(100, 200]|(0.9, 0.8]|
+|(200, 300]|(0.8, 0.6]|
+|(300, 400]|(0.6, 0.5]|
+|(400, 1000]|(0.5, 0.0]|
+|(1000, +]|0.0|
+
+饿了么店铺-百度外卖店铺：
+
+|距离段|分数段|
+|:----|:----|
+|[0, 200]|(0.5, 0.3]|
+|(200, 300]|(0.9, 0.7]|
+|[300, 400]|[1.0, 0.9]|
+|(400, 500]|(0.7, 0.5]|
+|(500, 1000]|(0.5, 0.0]|
+|(1000, +]|0.0|
+
+
+#### 4.1.3 店铺判重算法整合实现
+
+经过上面的数据分析，我们已经选出可判定重复店铺的关键属性（名称，地址，电话，经纬度），我们也对应着每一种关键属性进行了算法分析、编写、挑选，计算出了最适应该属性的匹配算法，和其在各个平台上独有的阀值，下面我们根据上面的分析，编写出一整套门店判重算法（我们暂定名称权重0.5，地址权重0.3，经纬度距离权重0.3）算法的步骤如下：
+
+1. 初始化数据，拿到一家饿了么店铺A的基本信息a_info， 拿到一家非饿了么平台店铺B的基本信息b_info。
+2. 用电话匹配算法对店铺A的电话属性a_phone和店铺B的电话属性b_phone进行匹配，如果分数等于1.0则跳到步骤7，否则跳到步骤3。
+3. 用Jarowinkler Similar算法对店铺A的名称属性a_name和店铺B的名称属性b_name进行匹配，根据4.1.1章节的相似度阀值，得出匹配分数name_score，并跳到步骤4。
+4. 用Cosine Similar算法对店铺A的地址属性a_address和店铺B的地址属性b_address进行匹配，根据4.1.1章节的相似度阀值，得出地址匹配分数address_score，并跳到步骤5。
+5. 用经纬度距离算法和4.1.2章节所计算出的距离分数比对，得出距离分数distance_score，并且跳到步骤6。
+6. 根据公式: all_score = name_score*0.5 + address_score*0.3 + distance_score*0.2 得出最终匹配分数 all_score，跳到步骤7。
+7. 得出最终匹配分数。
+
+我们根据上面的步骤画出流程图：
+
+![门店判重算法流程图](http://oppz2fvil.bkt.clouddn.com/shop_match_flow_chart.png)
+
+下面是整合之后的代码：
+
+提供的店铺model代码:
+
+```python
+class Shop(object):
+    ELEME_SOURCE = ELEME_SOURCE
+    MEITUAN_SOURCE = MEITUAN_SOURCE
+    DIANPING_SOURCE = DIANPING_SOURCE
+    BAIDU_SOURCE = BAIDU_SOURCE
+
+    sources = ['eleme', 'meituan', 'dianping', 'baidu']
+
+
+    def __init__(self, name, address, phones, latitude, longitude, source):
+        self.name = name
+        self.address = address
+        self.phones = phones
+        self.latitude = latitude
+        self.longitude = longitude
+        self.source = source
+
+
+    def __str__(self):
+        return 'name[%s], address[%s], phones[%s], latitude[%s], longitude[%s], source[%s]' % (self.name, self.address, self.phones, self.latitude, self.longitude, self.sources[self.source])
+
+
+    def match_shop(self, other_shop):
+        if self.source == self.ELEME_SOURCE and other_shop.source == self.ELEME_SOURCE or self.source != self.ELEME_SOURCE and other_shop.source != self.ELEME_SOURCE:
+            raise Exception ('能且只能进行 饿了么店铺 和 竞对店铺 进行匹配')
+        
+        eleme_poi_shop = None
+        other_poi_shop = None
+        other_poi_source = None
+        if self.source == self.ELEME_SOURCE:
+            eleme_poi_shop = self
+            other_poi_shop = other_shop
+            other_poi_source = other_poi_shop.source
+        elif other_shop.source == self.ELEME_SOURCE:
+            eleme_poi_shop = other_shop
+            other_poi_shop = self
+            other_poi_source = other_poi_shop.source
+        else:
+            raise Exception ('能且只能进行 饿了么店铺 和 竞对店铺 进行匹配')
+
+        return calc_shop_similar_score(eleme_poi_shop, other_poi_shop, other_poi_source) # 计算两个店铺的匹配度
+```
+
+各个算法的阀值配置：
+
+```python
+ELEME_SOURCE = 0
+MEITUAN_SOURCE = 1
+DIANPING_SOURCE = 2
+BAIDU_SOURCE = 3
+
+ALL_SOURCES = [
+    {
+        'pinyin':'eleme',
+        'name':u"饿了么",
+        'source':ELEME_SOURCE,
+    },
+    {
+        'pinyin':'meituan',
+        'name':u"美团外卖",
+        'source':MEITUAN_SOURCE,
+    },
+    {
+        'pinyin':'dianping',
+        'name':u"点评外卖",
+        'source':DIANPING_SOURCE,
+    },
+    {
+        'pinyin':'baidu',
+        'name':u"百度外卖",
+        'source':BAIDU_SOURCE,
+    }
+]
+
+# 电话匹配分数阀值 score >= phone_threshold 确认匹配，否则继续进行别属性匹配
+phone_threshold = 1.0 
+
+# 店铺各种属性的权重
+name_weight = 0.5
+address_weight = 0.3
+distance_weight = 0.2
+
+# 店铺的名称，地址在匹配分数段上对应的得分
+eleme_baidu_name = [
+    {
+        'min_score':0.8,
+        'min_include':False,
+        'max_score':1.0,
+        'max_include':True,
+        'return_score':1.0,
+    },
+    {
+        'min_score':0.6,
+        'min_include':False,
+        'max_score':0.8,
+        'max_include':True,
+        'return_score':0.8,
+    },
+    {
+        'min_score':0.5,
+        'min_include':False,
+        'max_score':0.6,
+        'max_include':True,
+        'return_score':0.6,
+    },
+    {
+        'min_score':0.0,
+        'min_include':True,
+        'max_score':0.5,
+        'max_include':True,
+        'return_score':0.0,
+    },
+]
+
+eleme_baidu_address = [
+    {
+        'min_score':0.8,
+        'min_include':False,
+        'max_score':1.0,
+        'max_include':True,
+        'return_score':1.0,
+    },
+    {
+        'min_score':0.6,
+        'min_include':False,
+        'max_score':0.8,
+        'max_include':True,
+        'return_score':0.9,
+    },
+    {
+        'min_score':0.4,
+        'min_include':False,
+        'max_score':0.6,
+        'max_include':True,
+        'return_score':0.8,
+    },
+    {
+        'min_score':0.3,
+        'min_include':False,
+        'max_score':0.4,
+        'max_include':True,
+        'return_score':0.6,
+    },
+    {
+        'min_score':0.0,
+        'min_include':True,
+        'max_score':0.3,
+        'max_include':True,
+        'return_score':0.0,
+    },
+]
+
+eleme_meituan_name = [
+    {
+        'min_score':0.8,
+        'min_include':False,
+        'max_score':1.0,
+        'max_include':True,
+        'return_score':1.0,
+    },
+    {
+        'min_score':0.6,
+        'min_include':False,
+        'max_score':0.8,
+        'max_include':True,
+        'return_score':0.8,
+    },
+    {
+        'min_score':0.5,
+        'min_include':False,
+        'max_score':0.6,
+        'max_include':True,
+        'return_score':0.6,
+    },
+    {
+        'min_score':0.0,
+        'min_include':True,
+        'max_score':0.5,
+        'max_include':True,
+        'return_score':0.0,
+    },
+]
+
+eleme_meituan_address = [
+    {
+        'min_score':0.8,
+        'min_include':False,
+        'max_score':1.0,
+        'max_include':True,
+        'return_score':1.0,
+    },
+    {
+        'min_score':0.6,
+        'min_include':False,
+        'max_score':0.8,
+        'max_include':True,
+        'return_score':0.9,
+    },
+    {
+        'min_score':0.4,
+        'min_include':False,
+        'max_score':0.6,
+        'max_include':True,
+        'return_score':0.8,
+    },
+    {
+        'min_score':0.3,
+        'min_include':False,
+        'max_score':0.4,
+        'max_include':True,
+        'return_score':0.6,
+    },
+    {
+        'min_score':0.0,
+        'min_include':True,
+        'max_score':0.3,
+        'max_include':True,
+        'return_score':0.0,
+    },
+]
+
+eleme_dianping_name = [
+    {
+        'min_score':0.8,
+        'min_include':False,
+        'max_score':1.0,
+        'max_include':True,
+        'return_score':1.0,
+    },
+    {
+        'min_score':0.6,
+        'min_include':False,
+        'max_score':0.8,
+        'max_include':True,
+        'return_score':0.8,
+    },
+    {
+        'min_score':0.5,
+        'min_include':False,
+        'max_score':0.6,
+        'max_include':True,
+        'return_score':0.6,
+    },
+    {
+        'min_score':0.0,
+        'min_include':True,
+        'max_score':0.5,
+        'max_include':True,
+        'return_score':0.0,
+    },
+]
+
+eleme_dianping_address = [
+    {
+        'min_score':0.8,
+        'min_include':False,
+        'max_score':1.0,
+        'max_include':True,
+        'return_score':1.0,
+    },
+    {
+        'min_score':0.6,
+        'min_include':False,
+        'max_score':0.8,
+        'max_include':True,
+        'return_score':0.9,
+    },
+    {
+        'min_score':0.4,
+        'min_include':False,
+        'max_score':0.6,
+        'max_include':True,
+        'return_score':0.8,
+    },
+    {
+        'min_score':0.3,
+        'min_include':False,
+        'max_score':0.4,
+        'max_include':True,
+        'return_score':0.6,
+    },
+    {
+        'min_score':0.0,
+        'min_include':True,
+        'max_score':0.3,
+        'max_include':True,
+        'return_score':0.0,
+    },
+]
+
+
+# 店铺 经纬度距离 和对应的得分
+eleme_meituan_distance = [
+    {
+        'max_distance':100,
+        'max_include':True,
+        'return_max_score':0.9,
+        'min_distance':0,
+        'min_include':True,
+        'return_min_score':1.0,
+    },
+    {
+        'max_distance':200,
+        'max_include':True,
+        'return_max_score':0.8,
+        'min_distance':100,
+        'min_include':False,
+        'return_min_score':0.9,
+    },
+    {
+        'max_distance':300,
+        'max_include':True,
+        'return_max_score':0.6,
+        'min_distance':200,
+        'min_include':False,
+        'return_min_score':0.8,
+    },
+    {
+        'max_distance':400,
+        'max_include':True,
+        'return_max_score':0.5,
+        'min_distance':300,
+        'min_include':False,
+        'return_min_score':0.6,
+    },
+    {
+        'max_distance':1000,
+        'max_include':True,
+        'return_max_score':0.0,
+        'min_distance':400,
+        'min_include':False,
+        'return_min_score':0.5,
+    },
+    {
+        'max_distance':sys.maxint,
+        'max_include':True,
+        'return_max_score':0.0,
+        'min_distance':1000,
+        'min_include':False,
+        'return_min_score':0.0,
+    },
+]
+
+eleme_dianping_distance = [
+    {
+        'max_distance':100,
+        'max_include':True,
+        'return_max_score':0.9,
+        'min_distance':0,
+        'min_include':True,
+        'return_min_score':1.0,
+    },
+    {
+        'max_distance':200,
+        'max_include':True,
+        'return_max_score':0.8,
+        'min_distance':100,
+        'min_include':False,
+        'return_min_score':0.9,
+    },
+    {
+        'max_distance':300,
+        'max_include':True,
+        'return_max_score':0.6,
+        'min_distance':200,
+        'min_include':False,
+        'return_min_score':0.8,
+    },
+    {
+        'max_distance':400,
+        'max_include':True,
+        'return_max_score':0.5,
+        'min_distance':300,
+        'min_include':False,
+        'return_min_score':0.6,
+    },
+    {
+        'max_distance':1000,
+        'max_include':True,
+        'return_max_score':0.0,
+        'min_distance':400,
+        'min_include':False,
+        'return_min_score':0.5,
+    },
+    {
+        'max_distance':sys.maxint,
+        'max_include':True,
+        'return_max_score':0.0,
+        'min_distance':1000,
+        'min_include':False,
+        'return_min_score':0.0,
+    },
+]
+
+eleme_baidu_distance = [
+    {
+        'max_distance':200,
+        'max_include':True,
+        'return_max_score':0.3,
+        'min_distance':0,
+        'min_include':True,
+        'return_min_score':0.5,
+    },
+    {
+        'max_distance':300,
+        'max_include':True,
+        'return_max_score':0.7,
+        'min_distance':200,
+        'min_include':False,
+        'return_min_score':0.9,
+    },
+    {
+        'max_distance':400,
+        'max_include':True,
+        'return_max_score':0.9,
+        'min_distance':300,
+        'min_include':True,
+        'return_min_score':1.0,
+    },
+    {
+        'max_distance':500,
+        'max_include':True,
+        'return_max_score':0.5,
+        'min_distance':400,
+        'min_include':False,
+        'return_min_score':0.7,
+    },
+    {
+        'max_distance':1000,
+        'max_include':True,
+        'return_max_score':0.0,
+        'min_distance':500,
+        'min_include':False,
+        'return_min_score':0.5,
+    },
+    {
+        'max_distance':sys.maxint,
+        'max_include':True,
+        'return_max_score':0.0,
+        'min_distance':1000,
+        'min_include':False,
+        'return_min_score':0.0,
+    },
+]
+```
+
+主要店铺判重逻辑代码：
+
+```python
+def calc_shop_similar_score(eleme_shop, other_shop, other_source):
+    ps = PhoneSimilar(eleme_shop.phones, other_shop.phones)
+    phone_score = ps.calc_similar() # 使用 电话匹配度 算法
+
+    if phone_score >= phone_threshold:
+        return phone_score
+    else:
+        name_score = calc_shop_name_similar(eleme_shop.name, other_shop.name, other_source)
+        address_score = calc_shop_address_similar(eleme_shop.address, other_shop.address, other_source)
+        distance_score = calc_shop_distance_similar(eleme_shop.latitude, eleme_shop.longitude, other_shop.latitude, other_shop.longitude, other_source)
+        print 'name[%s], address[%s]. distance[%s]' % (name_score, address_score, distance_score)
+
+        return name_score*name_weight + address_score*address_weight + distance_score*distance_weight
+
+
+def calc_shop_name_similar(eleme_name, other_name, other_source):
+    jw = JaroWinklerSimilar(eleme_name, other_name)
+    similar_score = jw.jarowinkler_similar() # 使用 JaroWinkler 相似度算法
+
+    one_source = ALL_SOURCES[other_source]
+    
+    return get_smc_name_score(similar_score, one_source) # 获取经过阀值重新计算之后的名称分数
+
+
+def calc_shop_address_similar(eleme_address, other_address, other_source):
+    cs = CosineSimilar(eleme_address, other_address)
+    similar_score = cs.calc_similar() # 使用 CosineSimilar 相似度算法
+
+    one_source = ALL_SOURCES[other_source]
+
+    return get_smc_address_score(similar_score, one_source) # 获取经过阀值重新计算之后的地址分数
+
+
+def calc_shop_distance_similar(eleme_lat, eleme_lnt, other_lat, other_lnt, other_source):
+    sd = SphericalDistance(eleme_lnt, eleme_lat, other_lnt, other_lat)
+    distance = sd.calc_distance() # 计算 两点球面距离
+
+    one_source = ALL_SOURCES[other_source]
+
+    return get_smc_distance_score(distance, one_source) # 获取经过阀值重新计算之后的距离分数
+
+
+def get_smc_name_score(similar_score, one_source):
+    score_step =  eval('eleme_%s_name' % one_source['pinyin'])
+    for one_step in score_step:
+        condition = '%s %s %s and %s %s %s' % (one_step['max_score'], '>=' if one_step['max_include'] else '>', similar_score, one_step['min_score'], '<=' if one_step['min_include'] else '<', similar_score)
+        if eval(condition):
+            return one_step['return_score']
+
+
+def get_smc_address_score(similar_score, one_source):
+    score_step =  eval('eleme_%s_address' % one_source['pinyin'])
+    for one_step in score_step:
+        condition = '%s %s %s and %s %s %s' % (one_step['max_score'], '>=' if one_step['max_include'] else '>', similar_score, one_step['min_score'], '<=' if one_step['min_include'] else '<', similar_score)
+        if eval(condition):
+            return one_step['return_score']
+
+
+def get_smc_distance_score(distance, one_source):
+    distance_step = eval('eleme_%s_distance' % one_source['pinyin'])
+    for one_step in distance_step:
+        condition = '%s %s %s and %s %s %s' % (one_step['max_distance'], '>=' if one_step['max_include'] else '>', distance, one_step['min_distance'], '<=' if one_step['min_include'] else '<', distance)
+        if eval(condition):
+            step_distance = one_step['max_distance'] - one_step['min_distance']
+            step_score = one_step['return_min_score'] - one_step['return_max_score']
+            distance_ratio = (distance - one_step['max_distance']) * 1.0 / step_distance
+            return one_step['return_min_score'] - distance_ratio * step_score 
+
+```
 
 ### 4.2 店铺判重算法优化
 
 ### 4.3 店铺判重算法打包
 
 ### 4.3.1 打Python包
-
-### 4.3.2 打Java包
 
 ## 结论
 
